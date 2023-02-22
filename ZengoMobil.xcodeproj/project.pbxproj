@@ -22,6 +22,7 @@
 		B7F2A12929A66A5B00649F3A /* CitiesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7F2A12829A66A5B00649F3A /* CitiesViewController.swift */; };
 		B7F2A12B29A6703800649F3A /* Location.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7F2A12A29A6703800649F3A /* Location.swift */; };
 		B7F2A12D29A6C02900649F3A /* AddNewCityButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7F2A12C29A6C02900649F3A /* AddNewCityButton.swift */; };
+		B7F2A12F29A6CD0800649F3A /* AlertManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7F2A12E29A6CD0800649F3A /* AlertManager.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -42,6 +43,7 @@
 		B7F2A12829A66A5B00649F3A /* CitiesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CitiesViewController.swift; sourceTree = "<group>"; };
 		B7F2A12A29A6703800649F3A /* Location.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Location.swift; sourceTree = "<group>"; };
 		B7F2A12C29A6C02900649F3A /* AddNewCityButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddNewCityButton.swift; sourceTree = "<group>"; };
+		B7F2A12E29A6CD0800649F3A /* AlertManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertManager.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -122,6 +124,7 @@
 				B7F2A10229A5651900649F3A /* SceneDelegate.swift */,
 				B7F2A10929A5651A00649F3A /* Assets.xcassets */,
 				B7F2A10B29A5651A00649F3A /* LaunchScreen.storyboard */,
+				B7F2A12E29A6CD0800649F3A /* AlertManager.swift */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -216,6 +219,7 @@
 				B7F2A12729A661DC00649F3A /* StatesTableView.swift in Sources */,
 				B7F2A12529A6616700649F3A /* LocationTableViewCell.swift in Sources */,
 				B7F2A12B29A6703800649F3A /* Location.swift in Sources */,
+				B7F2A12F29A6CD0800649F3A /* AlertManager.swift in Sources */,
 				B7F2A11B29A567D500649F3A /* APICaller.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

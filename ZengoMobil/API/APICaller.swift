@@ -15,7 +15,7 @@ class APICaller {
     
     private let allStatesURLString = "https://probafeladat-api.zengo.eu/api/all_states"
     private let citiesForStateURLString = "https://probafeladat-api.zengo.eu/api/state_city"
-    private let cityURLString = "https://probafeladat-api.zengo.eu/api/city/"
+    private let cityURLString = "https://probafeladat-api.zengo.eu/api/city"
     
     func fetchAllStates(completion: @escaping(Result<APIResponse<[State]>, Error>) -> Void) {
         guard let url = URL(string: allStatesURLString) else {
@@ -49,12 +49,15 @@ class APICaller {
                 
                 if APIResponse.success {
                     completion(.success(APIResponse))
+                    return
                 } else {
                     completion(.failure(CustomAPIError.unexpectedError(APIResponse.errorMessage ?? "An unexpected error occurred. Please try again later.")))
+                    return
                 }
                 
             } catch {
                 completion(.failure(CustomAPIError.wrongDataFormat("The server returned data in an unexpected format.")))
+                return
             }
         }
         task.resume()
@@ -101,12 +104,71 @@ class APICaller {
                 
                 if APIResponse.success {
                     completion(.success(APIResponse))
+                    return
                 } else {
                     completion(.failure(CustomAPIError.unexpectedError(APIResponse.errorMessage ?? "An unexpected error occurred. Please try again later.")))
+                    return
                 }
                 
             } catch {
                 completion(.failure(CustomAPIError.wrongDataFormat("The server returned data in an unexpected format.")))
+                return
+            }
+        }
+        task.resume()
+    }
+    
+    func createNewCity(with city: City, completion: @escaping(Result<APIResponse<City>, Error>) -> Void) {
+        guard let url = URL(string: cityURLString) else {
+            completion(.failure(URLError.init(.badURL)))
+            return
+        }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "PUT"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.addValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
+        request.addValue(token, forHTTPHeaderField: "token")
+        
+        do {
+            let body: [String: Any] = ["name": city.name, "state_id": city.id]
+            let bodyJSON = try JSONSerialization.data(withJSONObject: body)
+            request.httpBody = bodyJSON
+        } catch {
+            completion(.failure(CustomAPIError.unexpectedError("Unexpected error happened"))) //This should never happen though.
+            return
+        }
+        
+        let task = URLSession.shared.dataTask(with: request) { data, response, error in
+            if let error = error {
+                completion(.failure(CustomAPIError.networkError(error.localizedDescription)))
+                return
+            }
+            
+            guard let response = response as? HTTPURLResponse, response.statusCode == 200 else {
+                completion(.failure(CustomAPIError.networkError("A network error occurred. Please check your internet connection and try again.")))
+                return
+            }
+            
+            guard let data = data else {
+                completion(.failure(CustomAPIError.missingData("The server returned an empty response.")))
+                return
+            }
+                        
+            do {
+                let APIResponse = try JSONDecoder().decode(APIResponse<City>.self, from: data)
+                
+                if APIResponse.success {
+                    completion(.success(APIResponse))
+                    return
+                } else {
+                    completion(.failure(CustomAPIError.unexpectedError(APIResponse.errorMessage ?? "An unexpected error occurred. Please try again later.")))
+                    return
+                }
+                
+            } catch {
+                completion(.failure(CustomAPIError.wrongDataFormat("The server returned data in an unexpected format.")))
+                return
             }
         }
         task.resume()

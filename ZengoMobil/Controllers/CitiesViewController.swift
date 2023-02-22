@@ -97,13 +97,37 @@ class CitiesViewController: UIViewController {
     @objc private func didTapAddNewCityButton() {
         let alertController = UIAlertController(title: "New City", message: "Create a new city", preferredStyle: .alert)
         
-        alertController.addTextField { [weak self] (textField) in
+        var citiesName = [String]()
+        
+        if let cities {
+            citiesName = cities.map({$0.name.lowercased()})
+        }
+                
+        alertController.addTextField { (textField) in
             textField.placeholder = "City Name"
         }
         
-        let createCityAction = UIAlertAction(title: "Create", style: .destructive) { (action) in
+        let createCityAction = UIAlertAction(title: "Create", style: .destructive) { [weak self] (action) in
+            guard let strongSelf = self else { return }
             if let textField = alertController.textFields?.first, let cityName = textField.text {
-                print(cityName)
+                if citiesName.contains(cityName.lowercased()) {
+                    AlertManager.shared.showBasicAlert(on: strongSelf, with: "City already exists", and: "A city with this name already exists.")
+                } else {
+                    let city = City(id: strongSelf.state.id, name: cityName)
+                    APICaller.shared.createNewCity(with: city) { [weak self] result in
+                        switch result {
+                        case .success(let city):
+                            guard let city = city.data else { return }
+                            strongSelf.cities?.append(city)
+                            DispatchQueue.main.async {
+                                strongSelf.citiesTableView.reloadData()
+                            }
+                        case .failure(let error):
+                            //TODO: - SHOW ALERT HERE
+                            print(error.localizedDescription)
+                        }
+                    }
+                }
             }
         }
 
