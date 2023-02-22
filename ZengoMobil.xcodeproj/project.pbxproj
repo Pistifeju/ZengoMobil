@@ -21,6 +21,7 @@
 		B7F2A12729A661DC00649F3A /* StatesTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7F2A12629A661DC00649F3A /* StatesTableView.swift */; };
 		B7F2A12929A66A5B00649F3A /* CitiesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7F2A12829A66A5B00649F3A /* CitiesViewController.swift */; };
 		B7F2A12B29A6703800649F3A /* Location.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7F2A12A29A6703800649F3A /* Location.swift */; };
+		B7F2A12D29A6C02900649F3A /* AddNewCityButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7F2A12C29A6C02900649F3A /* AddNewCityButton.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -40,6 +41,7 @@
 		B7F2A12629A661DC00649F3A /* StatesTableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatesTableView.swift; sourceTree = "<group>"; };
 		B7F2A12829A66A5B00649F3A /* CitiesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CitiesViewController.swift; sourceTree = "<group>"; };
 		B7F2A12A29A6703800649F3A /* Location.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Location.swift; sourceTree = "<group>"; };
+		B7F2A12C29A6C02900649F3A /* AddNewCityButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddNewCityButton.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -96,6 +98,7 @@
 			children = (
 				B7F2A12429A6616700649F3A /* LocationTableViewCell.swift */,
 				B7F2A12629A661DC00649F3A /* StatesTableView.swift */,
+				B7F2A12C29A6C02900649F3A /* AddNewCityButton.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -206,6 +209,7 @@
 				B7F2A10529A5651900649F3A /* StatesViewController.swift in Sources */,
 				B7F2A10129A5651900649F3A /* AppDelegate.swift in Sources */,
 				B7F2A11F29A65C4200649F3A /* City.swift in Sources */,
+				B7F2A12D29A6C02900649F3A /* AddNewCityButton.swift in Sources */,
 				B7F2A10329A5651900649F3A /* SceneDelegate.swift in Sources */,
 				B7F2A11D29A65C3F00649F3A /* State.swift in Sources */,
 				B7F2A12329A65C6300649F3A /* CustomAPIError.swift in Sources */,

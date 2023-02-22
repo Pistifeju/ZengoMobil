@@ -11,14 +11,14 @@ import UIKit
 class CitiesViewController: UIViewController {
     
     // MARK: - Properties
-        
-    private let loadingSpinner = UIActivityIndicatorView(style: .large)
     
     private let state: State
     private var cities: [City]? = nil
-
+    
+    private let addNewCityButton = AddNewCityButton(type: .system)
     private let citiesTableView = LocationsTableView()
     
+    private let loadingSpinner = UIActivityIndicatorView(style: .large)
     // MARK: - LifeCycle
     
     init(state: State) {
@@ -37,6 +37,8 @@ class CitiesViewController: UIViewController {
         citiesTableView.delegate = self
         citiesTableView.register(LocationTableViewCell.self, forCellReuseIdentifier: LocationTableViewCell.identifier)
         
+        addNewCityButton.addTarget(self, action: #selector(didTapAddNewCityButton), for: .touchUpInside)
+        
         setupUI()
         fetchCities()
     }
@@ -45,16 +47,17 @@ class CitiesViewController: UIViewController {
         super.viewWillAppear(animated)
         
         title = state.name
-        navigationController?.navigationBar.tintColor = .black
+        navigationController?.navigationBar.tintColor = .label
     }
     
     // MARK: - Helpers
     private func setupUI() {
-        view.backgroundColor = .systemBlue
+        view.backgroundColor = .systemBackground
         
         loadingSpinner.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(citiesTableView)
         view.addSubview(loadingSpinner)
+        view.addSubview(addNewCityButton)
         
         NSLayoutConstraint.activate([
             citiesTableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
@@ -64,6 +67,9 @@ class CitiesViewController: UIViewController {
             
             loadingSpinner.centerYAnchor.constraint(equalTo: view.centerYAnchor),
             loadingSpinner.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            
+            addNewCityButton.bottomAnchor.constraint(equalToSystemSpacingBelow: view.safeAreaLayoutGuide.bottomAnchor, multiplier: 2),
+            view.trailingAnchor.constraint(equalToSystemSpacingAfter: addNewCityButton.trailingAnchor, multiplier: 2),
         ])
     }
     
@@ -74,7 +80,6 @@ class CitiesViewController: UIViewController {
             switch result {
             case .success(let cities):
                 DispatchQueue.main.async {
-                    print(cities)
                     strongSelf.cities = cities.data
                     strongSelf.citiesTableView.reloadData()
                     strongSelf.loadingSpinner.stopAnimating()
@@ -88,6 +93,26 @@ class CitiesViewController: UIViewController {
     }
     
     // MARK: - Selectors
+    
+    @objc private func didTapAddNewCityButton() {
+        let alertController = UIAlertController(title: "New City", message: "Create a new city", preferredStyle: .alert)
+        
+        alertController.addTextField { [weak self] (textField) in
+            textField.placeholder = "City Name"
+        }
+        
+        let createCityAction = UIAlertAction(title: "Create", style: .destructive) { (action) in
+            if let textField = alertController.textFields?.first, let cityName = textField.text {
+                print(cityName)
+            }
+        }
+
+        let dismissAction = UIAlertAction(title: "Dismiss", style: .cancel)
+        alertController.addAction(dismissAction)
+        alertController.addAction(createCityAction)
+
+        present(alertController, animated: true, completion: nil)
+    }
 }
 
 // MARK: - UITableViewDelegate
@@ -125,8 +150,8 @@ extension CitiesViewController: UITableViewDataSource {
         
         let cell = citiesTableView.dequeueReusableCell(withIdentifier: LocationTableViewCell.identifier, for: indexPath) as! LocationTableViewCell
         cell.configureCell(with: cities[indexPath.row])
+        cell.accessoryType = .none
         return cell
     }
-    
-    
 }
+

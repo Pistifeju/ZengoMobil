@@ -110,6 +110,5 @@ class APICaller {
             }
         }
         task.resume()
-        
     }
 }

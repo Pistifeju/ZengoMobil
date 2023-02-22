@@ -17,7 +17,7 @@ class LocationTableViewCell: UITableViewCell {
     private let locationNameLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.textColor = .black
+        label.textColor = .label
         label.font = UIFont.preferredFont(forTextStyle: .title2)
         return label
     }()
@@ -41,7 +41,7 @@ class LocationTableViewCell: UITableViewCell {
     // MARK: - Helpers
     
     private func setupUI() {
-        backgroundColor = .white
+        backgroundColor = .systemBackground
         
         addSubview(locationNameLabel)
         
