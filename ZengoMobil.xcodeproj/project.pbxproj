@@ -9,7 +9,7 @@
 /* Begin PBXBuildFile section */
 		B7F2A10129A5651900649F3A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7F2A10029A5651900649F3A /* AppDelegate.swift */; };
 		B7F2A10329A5651900649F3A /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7F2A10229A5651900649F3A /* SceneDelegate.swift */; };
-		B7F2A10529A5651900649F3A /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7F2A10429A5651900649F3A /* MainViewController.swift */; };
+		B7F2A10529A5651900649F3A /* StatesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7F2A10429A5651900649F3A /* StatesViewController.swift */; };
 		B7F2A10A29A5651A00649F3A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B7F2A10929A5651A00649F3A /* Assets.xcassets */; };
 		B7F2A10D29A5651A00649F3A /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B7F2A10B29A5651A00649F3A /* LaunchScreen.storyboard */; };
 		B7F2A11B29A567D500649F3A /* APICaller.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7F2A11A29A567D500649F3A /* APICaller.swift */; };
@@ -17,13 +17,17 @@
 		B7F2A11F29A65C4200649F3A /* City.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7F2A11E29A65C4200649F3A /* City.swift */; };
 		B7F2A12129A65C5600649F3A /* APIResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7F2A12029A65C5600649F3A /* APIResponse.swift */; };
 		B7F2A12329A65C6300649F3A /* CustomAPIError.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7F2A12229A65C6300649F3A /* CustomAPIError.swift */; };
+		B7F2A12529A6616700649F3A /* LocationTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7F2A12429A6616700649F3A /* LocationTableViewCell.swift */; };
+		B7F2A12729A661DC00649F3A /* StatesTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7F2A12629A661DC00649F3A /* StatesTableView.swift */; };
+		B7F2A12929A66A5B00649F3A /* CitiesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7F2A12829A66A5B00649F3A /* CitiesViewController.swift */; };
+		B7F2A12B29A6703800649F3A /* Location.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7F2A12A29A6703800649F3A /* Location.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		B7F2A0FD29A5651900649F3A /* ZengoMobil.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ZengoMobil.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B7F2A10029A5651900649F3A /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		B7F2A10229A5651900649F3A /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
-		B7F2A10429A5651900649F3A /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
+		B7F2A10429A5651900649F3A /* StatesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatesViewController.swift; sourceTree = "<group>"; };
 		B7F2A10929A5651A00649F3A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		B7F2A10C29A5651A00649F3A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		B7F2A10E29A5651A00649F3A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -32,6 +36,10 @@
 		B7F2A11E29A65C4200649F3A /* City.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = City.swift; sourceTree = "<group>"; };
 		B7F2A12029A65C5600649F3A /* APIResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIResponse.swift; sourceTree = "<group>"; };
 		B7F2A12229A65C6300649F3A /* CustomAPIError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomAPIError.swift; sourceTree = "<group>"; };
+		B7F2A12429A6616700649F3A /* LocationTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationTableViewCell.swift; sourceTree = "<group>"; };
+		B7F2A12629A661DC00649F3A /* StatesTableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatesTableView.swift; sourceTree = "<group>"; };
+		B7F2A12829A66A5B00649F3A /* CitiesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CitiesViewController.swift; sourceTree = "<group>"; };
+		B7F2A12A29A6703800649F3A /* Location.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Location.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -77,7 +85,8 @@
 		B7F2A11429A566B900649F3A /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
-				B7F2A10429A5651900649F3A /* MainViewController.swift */,
+				B7F2A10429A5651900649F3A /* StatesViewController.swift */,
+				B7F2A12829A66A5B00649F3A /* CitiesViewController.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -85,6 +94,8 @@
 		B7F2A11529A566BF00649F3A /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				B7F2A12429A6616700649F3A /* LocationTableViewCell.swift */,
+				B7F2A12629A661DC00649F3A /* StatesTableView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -96,6 +107,7 @@
 				B7F2A11E29A65C4200649F3A /* City.swift */,
 				B7F2A12029A65C5600649F3A /* APIResponse.swift */,
 				B7F2A12229A65C6300649F3A /* CustomAPIError.swift */,
+				B7F2A12A29A6703800649F3A /* Location.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -189,13 +201,17 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B7F2A12929A66A5B00649F3A /* CitiesViewController.swift in Sources */,
 				B7F2A12129A65C5600649F3A /* APIResponse.swift in Sources */,
-				B7F2A10529A5651900649F3A /* MainViewController.swift in Sources */,
+				B7F2A10529A5651900649F3A /* StatesViewController.swift in Sources */,
 				B7F2A10129A5651900649F3A /* AppDelegate.swift in Sources */,
 				B7F2A11F29A65C4200649F3A /* City.swift in Sources */,
 				B7F2A10329A5651900649F3A /* SceneDelegate.swift in Sources */,
 				B7F2A11D29A65C3F00649F3A /* State.swift in Sources */,
 				B7F2A12329A65C6300649F3A /* CustomAPIError.swift in Sources */,
+				B7F2A12729A661DC00649F3A /* StatesTableView.swift in Sources */,
+				B7F2A12529A6616700649F3A /* LocationTableViewCell.swift in Sources */,
+				B7F2A12B29A6703800649F3A /* Location.swift in Sources */,
 				B7F2A11B29A567D500649F3A /* APICaller.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

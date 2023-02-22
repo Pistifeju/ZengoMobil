@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct State: Codable {
-    let id: Int
-    let name: String
+struct State: Codable, Location {
+    var id: Int
+    var name: String
 }
