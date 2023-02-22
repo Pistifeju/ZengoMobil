@@ -9,21 +9,29 @@
 /* Begin PBXBuildFile section */
 		B7F2A10129A5651900649F3A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7F2A10029A5651900649F3A /* AppDelegate.swift */; };
 		B7F2A10329A5651900649F3A /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7F2A10229A5651900649F3A /* SceneDelegate.swift */; };
-		B7F2A10529A5651900649F3A /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7F2A10429A5651900649F3A /* ViewController.swift */; };
-		B7F2A10829A5651900649F3A /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B7F2A10629A5651900649F3A /* Main.storyboard */; };
+		B7F2A10529A5651900649F3A /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7F2A10429A5651900649F3A /* MainViewController.swift */; };
 		B7F2A10A29A5651A00649F3A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B7F2A10929A5651A00649F3A /* Assets.xcassets */; };
 		B7F2A10D29A5651A00649F3A /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B7F2A10B29A5651A00649F3A /* LaunchScreen.storyboard */; };
+		B7F2A11B29A567D500649F3A /* APICaller.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7F2A11A29A567D500649F3A /* APICaller.swift */; };
+		B7F2A11D29A65C3F00649F3A /* State.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7F2A11C29A65C3F00649F3A /* State.swift */; };
+		B7F2A11F29A65C4200649F3A /* City.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7F2A11E29A65C4200649F3A /* City.swift */; };
+		B7F2A12129A65C5600649F3A /* APIResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7F2A12029A65C5600649F3A /* APIResponse.swift */; };
+		B7F2A12329A65C6300649F3A /* CustomAPIError.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7F2A12229A65C6300649F3A /* CustomAPIError.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		B7F2A0FD29A5651900649F3A /* ZengoMobil.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ZengoMobil.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B7F2A10029A5651900649F3A /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		B7F2A10229A5651900649F3A /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
-		B7F2A10429A5651900649F3A /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
-		B7F2A10729A5651900649F3A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		B7F2A10429A5651900649F3A /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
 		B7F2A10929A5651A00649F3A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		B7F2A10C29A5651A00649F3A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		B7F2A10E29A5651A00649F3A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		B7F2A11A29A567D500649F3A /* APICaller.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APICaller.swift; sourceTree = "<group>"; };
+		B7F2A11C29A65C3F00649F3A /* State.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = State.swift; sourceTree = "<group>"; };
+		B7F2A11E29A65C4200649F3A /* City.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = City.swift; sourceTree = "<group>"; };
+		B7F2A12029A65C5600649F3A /* APIResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIResponse.swift; sourceTree = "<group>"; };
+		B7F2A12229A65C6300649F3A /* CustomAPIError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomAPIError.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -56,15 +64,59 @@
 		B7F2A0FF29A5651900649F3A /* ZengoMobil */ = {
 			isa = PBXGroup;
 			children = (
-				B7F2A10029A5651900649F3A /* AppDelegate.swift */,
-				B7F2A10229A5651900649F3A /* SceneDelegate.swift */,
-				B7F2A10429A5651900649F3A /* ViewController.swift */,
-				B7F2A10629A5651900649F3A /* Main.storyboard */,
-				B7F2A10929A5651A00649F3A /* Assets.xcassets */,
-				B7F2A10B29A5651A00649F3A /* LaunchScreen.storyboard */,
+				B7F2A11729A566C900649F3A /* Resources */,
+				B7F2A11929A566D200649F3A /* API */,
+				B7F2A11629A566C100649F3A /* Models */,
+				B7F2A11529A566BF00649F3A /* Views */,
+				B7F2A11429A566B900649F3A /* Controllers */,
 				B7F2A10E29A5651A00649F3A /* Info.plist */,
 			);
 			path = ZengoMobil;
+			sourceTree = "<group>";
+		};
+		B7F2A11429A566B900649F3A /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				B7F2A10429A5651900649F3A /* MainViewController.swift */,
+			);
+			path = Controllers;
+			sourceTree = "<group>";
+		};
+		B7F2A11529A566BF00649F3A /* Views */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		B7F2A11629A566C100649F3A /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				B7F2A11C29A65C3F00649F3A /* State.swift */,
+				B7F2A11E29A65C4200649F3A /* City.swift */,
+				B7F2A12029A65C5600649F3A /* APIResponse.swift */,
+				B7F2A12229A65C6300649F3A /* CustomAPIError.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		B7F2A11729A566C900649F3A /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				B7F2A10029A5651900649F3A /* AppDelegate.swift */,
+				B7F2A10229A5651900649F3A /* SceneDelegate.swift */,
+				B7F2A10929A5651A00649F3A /* Assets.xcassets */,
+				B7F2A10B29A5651A00649F3A /* LaunchScreen.storyboard */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		B7F2A11929A566D200649F3A /* API */ = {
+			isa = PBXGroup;
+			children = (
+				B7F2A11A29A567D500649F3A /* APICaller.swift */,
+			);
+			path = API;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -127,7 +179,6 @@
 			files = (
 				B7F2A10D29A5651A00649F3A /* LaunchScreen.storyboard in Resources */,
 				B7F2A10A29A5651A00649F3A /* Assets.xcassets in Resources */,
-				B7F2A10829A5651900649F3A /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -138,23 +189,20 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B7F2A10529A5651900649F3A /* ViewController.swift in Sources */,
+				B7F2A12129A65C5600649F3A /* APIResponse.swift in Sources */,
+				B7F2A10529A5651900649F3A /* MainViewController.swift in Sources */,
 				B7F2A10129A5651900649F3A /* AppDelegate.swift in Sources */,
+				B7F2A11F29A65C4200649F3A /* City.swift in Sources */,
 				B7F2A10329A5651900649F3A /* SceneDelegate.swift in Sources */,
+				B7F2A11D29A65C3F00649F3A /* State.swift in Sources */,
+				B7F2A12329A65C6300649F3A /* CustomAPIError.swift in Sources */,
+				B7F2A11B29A567D500649F3A /* APICaller.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXVariantGroup section */
-		B7F2A10629A5651900649F3A /* Main.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				B7F2A10729A5651900649F3A /* Base */,
-			);
-			name = Main.storyboard;
-			sourceTree = "<group>";
-		};
 		B7F2A10B29A5651A00649F3A /* LaunchScreen.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -292,9 +340,8 @@
 				INFOPLIST_FILE = ZengoMobil/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
-				INFOPLIST_KEY_UIMainStoryboardFile = Main;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -320,9 +367,8 @@
 				INFOPLIST_FILE = ZengoMobil/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
-				INFOPLIST_KEY_UIMainStoryboardFile = Main;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
