@@ -196,8 +196,4 @@ class APICaller {
         }
         task.resume()
     }
-    
-    private func createURLRequest(_ requestType: RequestType) {
-        
-    }
 }

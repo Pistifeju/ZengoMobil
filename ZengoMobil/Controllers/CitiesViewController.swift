@@ -13,7 +13,7 @@ class CitiesViewController: UIViewController {
     // MARK: - Properties
     
     private let state: State
-    private var cities: [City]? = nil
+    private var cities: [City] = [City]()
     
     private let addNewCityButton = AddNewCityButton(type: .system)
     private let citiesTableView = LocationsTableView()
@@ -80,50 +80,15 @@ class CitiesViewController: UIViewController {
             switch result {
             case .success(let cities):
                 DispatchQueue.main.async {
-                    strongSelf.cities = cities.data
-                    strongSelf.citiesTableView.reloadData()
                     strongSelf.loadingSpinner.stopAnimating()
+                    strongSelf.loadingSpinner.hidesWhenStopped = true
+                    strongSelf.cities = cities.data ?? []
+                    strongSelf.citiesTableView.reloadData()
                 }
             case .failure(let error):
                 print(error)
                 print("Error happened: \(error.localizedDescription)")
                 //TODO: - Show alert here
-            }
-        }
-    }
-    
-    private func deleteSelectedCity(_ cities: [City], _ indexPath: IndexPath) {
-        let selectedCity = cities[indexPath.row]
-        let requestType = RequestType.deleteCity(city_id: selectedCity.id)
-        APICaller.shared.performRequest(requestType) { [weak self] result in
-            guard let strongSelf = self else { return }
-            switch result {
-            case .success(_):
-                DispatchQueue.main.async {
-                    strongSelf.cities?.remove(at: indexPath.row)
-                    strongSelf.citiesTableView.deleteRows(at: [indexPath], with: .fade)
-                }
-            case .failure(let error):
-                //TODO: - SHOW ALERT HERE
-                print(error.localizedDescription)
-            }
-        }
-    }
-    
-    private func postNewCity(_ strongSelf: CitiesViewController, _ cityName: String) {
-        let city = City(id: strongSelf.state.id, name: cityName)
-        let requestType = RequestType.createNewCity(city: city)
-        APICaller.shared.performRequest(requestType) { [weak self] result in
-            switch result {
-            case .success(let city):
-                guard let city = city.data else { return }
-                DispatchQueue.main.async {
-                    strongSelf.cities?.append(city)
-                    strongSelf.citiesTableView.reloadData()
-                }
-            case .failure(let error):
-                //TODO: - SHOW ALERT HERE
-                print(error.localizedDescription)
             }
         }
     }
@@ -134,10 +99,8 @@ class CitiesViewController: UIViewController {
         let alertController = UIAlertController(title: "Új város", message: "Új város hozzáadása.", preferredStyle: .alert)
         
         var citiesName = [String]()
-        
-        if let cities {
-            citiesName = cities.map({$0.name.lowercased()})
-        }
+
+        citiesName = cities.map({$0.name.lowercased()})
         
         alertController.addTextField { (textField) in
             textField.placeholder = "Város név"
@@ -149,7 +112,22 @@ class CitiesViewController: UIViewController {
                 if citiesName.contains(cityName.lowercased()) {
                     AlertManager.shared.showBasicAlert(on: strongSelf, with: "Létező város", and: "Ilyen nevű város már létezik.")
                 } else {
-                    strongSelf.postNewCity(strongSelf, cityName)
+                    let stateID = strongSelf.state.id
+                    let city = City(id: stateID, name: cityName)
+                    let requestType = RequestType.createNewCity(city: city)
+                    city.performRequestOnCity(with: requestType) { result in
+                        switch result {
+                        case .success(let city):
+                            guard let city = city else { return }
+                            DispatchQueue.main.async {
+                                strongSelf.cities.append(city)
+                                strongSelf.citiesTableView.reloadData()
+                            }
+                        case .failure(let error):
+                            // TODO: - Show error alert here
+                            print(error)
+                        }
+                    }
                 }
             }
         }
@@ -175,7 +153,47 @@ extension CitiesViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        // TODO: - FINISH SELECTION
+        print(indexPath)
+        let selectedCity = cities[indexPath.row]
+        
+        let alertController = UIAlertController(title: "Város szerkesztés", message: "Add meg a város új nevét.", preferredStyle: .alert)
+        
+        let citiesName = cities.map({$0.name.lowercased()})
+        
+        alertController.addTextField { (textField) in
+            textField.placeholder = "Város név"
+        }
+        
+        let createCityAction = UIAlertAction(title: "Szerkeszt", style: .default) { [weak self] (action) in
+            guard let strongSelf = self else { return }
+            if let textField = alertController.textFields?.first, let cityName = textField.text {
+                if citiesName.contains(cityName.lowercased()) {
+                    AlertManager.shared.showBasicAlert(on: strongSelf, with: "Létező város", and: "Ilyen nevű város már létezik.")
+                } else {
+                    let newCity = City(id: selectedCity.id, name: cityName)
+                    let requestType = RequestType.updateCity(city: newCity)
+                    newCity.performRequestOnCity(with: requestType) { result in
+                        switch result {
+                        case .success(let city):
+                            guard let city = city else { return }
+                            DispatchQueue.main.async {
+                                strongSelf.cities[indexPath.row] = city
+                                strongSelf.citiesTableView.reloadData()
+                            }
+                        case .failure(let error):
+                            // TODO: - Show error alert here
+                            print(error)
+                        }
+                    }
+                }
+            }
+        }
+        
+        let dismissAction = UIAlertAction(title: "Vissza", style: .cancel)
+        alertController.addAction(dismissAction)
+        alertController.addAction(createCityAction)
+        
+        present(alertController, animated: true, completion: nil)
     }
 }
 
@@ -183,9 +201,21 @@ extension CitiesViewController: UITableViewDelegate {
 
 extension CitiesViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
-        guard let cities = cities else { return }
         if editingStyle == .delete {
-            deleteSelectedCity(cities, indexPath)
+            let selectedCity = cities[indexPath.row]
+            let requestType = RequestType.deleteCity(city_id: selectedCity.id)
+            selectedCity.performRequestOnCity(with: requestType) { result in
+                switch result {
+                case .success(_):
+                    DispatchQueue.main.async {
+                        self.cities.remove(at: indexPath.row)
+                        self.citiesTableView.deleteRows(at: [indexPath], with: .fade)
+                    }
+                case .failure(let error):
+                    // TODO: - Show error alert here
+                    print(error)
+                }
+            }
         }
     }
     
@@ -194,11 +224,11 @@ extension CitiesViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return cities?.count ?? 0
+        return cities.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cities = cities else {
+        guard !cities.isEmpty else {
             return UITableViewCell.init()
         }
         
