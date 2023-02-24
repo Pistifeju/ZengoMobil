@@ -12,6 +12,8 @@ class CitiesViewController: UIViewController {
     
     // MARK: - Properties
     
+    private let refreshControl = UIRefreshControl()
+    
     private let state: State
     private var cities: [City] = [City]()
     
@@ -33,10 +35,12 @@ class CitiesViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        citiesTableView.refreshControl = refreshControl
         citiesTableView.dataSource = self
         citiesTableView.delegate = self
         citiesTableView.register(LocationTableViewCell.self, forCellReuseIdentifier: LocationTableViewCell.identifier)
-        
+                
+        refreshControl.addTarget(self, action: #selector(didPullRefreshControl), for: .valueChanged)
         addNewCityButton.addTarget(self, action: #selector(didTapAddNewCityButton), for: .touchUpInside)
         
         setupUI()
@@ -68,7 +72,7 @@ class CitiesViewController: UIViewController {
             loadingSpinner.centerYAnchor.constraint(equalTo: view.centerYAnchor),
             loadingSpinner.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             
-            addNewCityButton.bottomAnchor.constraint(equalToSystemSpacingBelow: view.safeAreaLayoutGuide.bottomAnchor, multiplier: 2),
+            view.safeAreaLayoutGuide.bottomAnchor.constraint(equalToSystemSpacingBelow: addNewCityButton.bottomAnchor, multiplier: 2),
             view.trailingAnchor.constraint(equalToSystemSpacingAfter: addNewCityButton.trailingAnchor, multiplier: 2),
         ])
     }
@@ -84,11 +88,44 @@ class CitiesViewController: UIViewController {
                     strongSelf.loadingSpinner.hidesWhenStopped = true
                     strongSelf.cities = cities.data ?? []
                     strongSelf.citiesTableView.reloadData()
+                    strongSelf.addNewCityButton.isHidden = false
                 }
-            case .failure(let error):
-                print(error)
-                print("Error happened: \(error.localizedDescription)")
-                //TODO: - Show alert here
+            case .failure(let error as CustomAPIError):
+                AlertManager.shared.showBasicAlert(on: strongSelf, with: "Hiba történt", and: error.toString)
+            case .failure(_):
+                AlertManager.shared.showBasicAlert(on: strongSelf, with: "Hiba történt", and: "Váratlan hiba történt")
+            }
+        }
+    }
+    
+    private func performCityRequest(_ request: RequestType, city: City, indexPath: IndexPath? = nil) {
+        city.performRequestOnCity(with: request) { [weak self] result in
+            guard let strongSelf = self else { return }
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let newCity):
+                    switch request {
+                    case .createNewCity(city: _):
+                        if let newCity {
+                            strongSelf.cities.append(newCity)
+                            strongSelf.citiesTableView.reloadData()
+                        }
+                    case .deleteCity(city_id: _):
+                        if let indexPath {
+                            strongSelf.cities.remove(at: indexPath.row)
+                            strongSelf.citiesTableView.deleteRows(at: [indexPath], with: .fade)
+                        }
+                    case .updateCity(city: _):
+                        if let indexPath, let newCity {
+                            strongSelf.cities[indexPath.row] = newCity
+                            strongSelf.citiesTableView.reloadData()
+                        }
+                    }
+                case .failure(let error as CustomAPIError):
+                    AlertManager.shared.showBasicAlert(on: strongSelf, with: "Hiba történt", and: error.toString)
+                case .failure(_):
+                    AlertManager.shared.showBasicAlert(on: strongSelf, with: "Hiba történt", and: "Váratlan hiba történt.")
+                }
             }
         }
     }
@@ -115,19 +152,7 @@ class CitiesViewController: UIViewController {
                     let stateID = strongSelf.state.id
                     let city = City(id: stateID, name: cityName)
                     let requestType = RequestType.createNewCity(city: city)
-                    city.performRequestOnCity(with: requestType) { result in
-                        switch result {
-                        case .success(let city):
-                            guard let city = city else { return }
-                            DispatchQueue.main.async {
-                                strongSelf.cities.append(city)
-                                strongSelf.citiesTableView.reloadData()
-                            }
-                        case .failure(let error):
-                            // TODO: - Show error alert here
-                            print(error)
-                        }
-                    }
+                    strongSelf.performCityRequest(requestType, city: city)
                 }
             }
         }
@@ -137,6 +162,11 @@ class CitiesViewController: UIViewController {
         alertController.addAction(createCityAction)
         
         present(alertController, animated: true, completion: nil)
+    }
+    
+    @objc private func didPullRefreshControl() {
+        fetchCities()
+        refreshControl.endRefreshing()
     }
 }
 
@@ -153,9 +183,6 @@ extension CitiesViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        print(indexPath)
-        let selectedCity = cities[indexPath.row]
-        
         let alertController = UIAlertController(title: "Város szerkesztés", message: "Add meg a város új nevét.", preferredStyle: .alert)
         
         let citiesName = cities.map({$0.name.lowercased()})
@@ -170,21 +197,9 @@ extension CitiesViewController: UITableViewDelegate {
                 if citiesName.contains(cityName.lowercased()) {
                     AlertManager.shared.showBasicAlert(on: strongSelf, with: "Létező város", and: "Ilyen nevű város már létezik.")
                 } else {
-                    let newCity = City(id: selectedCity.id, name: cityName)
+                    let newCity = City(id: strongSelf.cities[indexPath.row].id, name: cityName)
                     let requestType = RequestType.updateCity(city: newCity)
-                    newCity.performRequestOnCity(with: requestType) { result in
-                        switch result {
-                        case .success(let city):
-                            guard let city = city else { return }
-                            DispatchQueue.main.async {
-                                strongSelf.cities[indexPath.row] = city
-                                strongSelf.citiesTableView.reloadData()
-                            }
-                        case .failure(let error):
-                            // TODO: - Show error alert here
-                            print(error)
-                        }
-                    }
+                    strongSelf.performCityRequest(requestType, city: newCity, indexPath: indexPath)
                 }
             }
         }
@@ -204,18 +219,7 @@ extension CitiesViewController: UITableViewDataSource {
         if editingStyle == .delete {
             let selectedCity = cities[indexPath.row]
             let requestType = RequestType.deleteCity(city_id: selectedCity.id)
-            selectedCity.performRequestOnCity(with: requestType) { result in
-                switch result {
-                case .success(_):
-                    DispatchQueue.main.async {
-                        self.cities.remove(at: indexPath.row)
-                        self.citiesTableView.deleteRows(at: [indexPath], with: .fade)
-                    }
-                case .failure(let error):
-                    // TODO: - Show error alert here
-                    print(error)
-                }
-            }
+            performCityRequest(requestType, city: selectedCity, indexPath: indexPath)
         }
     }
     

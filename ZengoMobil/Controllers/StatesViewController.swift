@@ -10,6 +10,7 @@ import UIKit
 class StatesViewController: UIViewController {
     
     // MARK: - Properties
+    private let refreshControl = UIRefreshControl()
     private let loadingSpinner = UIActivityIndicatorView(style: .large)
     
     private var states: [State]? = nil
@@ -21,9 +22,12 @@ class StatesViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        statesTableView.refreshControl = refreshControl
         statesTableView.delegate = self
         statesTableView.dataSource = self
         statesTableView.register(LocationTableViewCell.self, forCellReuseIdentifier: LocationTableViewCell.identifier)
+        
+        refreshControl.addTarget(self, action: #selector(didPullRefreshControl), for: .valueChanged)
         
         setupUI()
         fetchStates()
@@ -75,15 +79,20 @@ class StatesViewController: UIViewController {
                     strongSelf.statesTableView.reloadData()
                     strongSelf.loadingSpinner.stopAnimating()
                 }
-            case .failure(let error):
-                print(error)
-                print("Error happened: \(error.localizedDescription)")
-                //TODO: - Show alert here
+            case .failure(let error as CustomAPIError):
+                AlertManager.shared.showBasicAlert(on: strongSelf, with: "Hiba történt", and: error.toString)
+            case .failure(_):
+                AlertManager.shared.showBasicAlert(on: strongSelf, with: "Hiba történt", and: "Váratlan hiba történt.")
             }
         }
     }
     
     // MARK: - Selectors
+    
+    @objc private func didPullRefreshControl() {
+        fetchStates()
+        refreshControl.endRefreshing()
+    }
 }
 
 // MARK: - UITableViewDelegate
@@ -99,11 +108,7 @@ extension StatesViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        guard let state = states?[indexPath.row] else { //This should never happen.
-            print("Error selecting state")
-            //TODO: - Show alert here
-            return
-        }
+        guard let state = states?[indexPath.row] else { return }
         let cityViewController = CitiesViewController(state: state)
         navigationController?.pushViewController(cityViewController, animated: true)        
     }

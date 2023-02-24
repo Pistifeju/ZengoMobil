@@ -29,6 +29,7 @@ class AddNewCityButton: UIButton {
         backgroundColor = .clear
         translatesAutoresizingMaskIntoConstraints = false
         
+        isHidden = true
         let largeConfig = UIImage.SymbolConfiguration(pointSize: UIScreen.main.bounds.width / 7, weight: .medium, scale: .large)
         let largeImage = UIImage(systemName: "plus.circle", withConfiguration: largeConfig)
         

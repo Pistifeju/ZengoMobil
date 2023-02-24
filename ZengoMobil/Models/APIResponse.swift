@@ -10,7 +10,7 @@ import Foundation
 struct APIResponse<T: Codable>: Codable {
     let success: Bool
     let errorCode: Int?
-    let errorMessage: String?
+    var errorMessage: ErrorMessage?
     var data: T? = nil
     
     enum CodingKeys: String, CodingKey {
@@ -24,7 +24,7 @@ struct APIResponse<T: Codable>: Codable {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         success = try container.decode(Bool.self, forKey: .success)
         errorCode = try container.decodeIfPresent(Int.self, forKey: .errorCode)
-        errorMessage = try container.decodeIfPresent(String.self, forKey: .errorMessage)
+        errorMessage = try container.decodeIfPresent(ErrorMessage.self, forKey: .errorMessage)
         
         if let data = try? container.decode(T.self, forKey: .data) {
             self.data = data

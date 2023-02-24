@@ -35,18 +35,19 @@ class APICaller {
         request.addValue(token, forHTTPHeaderField: "token")
         
         let task = URLSession.shared.dataTask(with: request) { data, response, error in
-            if let error = error {
-                completion(.failure(CustomAPIError.networkError(error.localizedDescription)))
+            if error != nil {
+                completion(.failure(CustomAPIError.networkError("Váratlan hiba történt.")))
+
                 return
             }
             
             guard let response = response as? HTTPURLResponse, response.statusCode == 200 else {
-                completion(.failure(CustomAPIError.networkError("A network error occurred. Please check your internet connection and try again.")))
+                completion(.failure(CustomAPIError.networkError("Hálózati hiba történt. Kérjük, ellenőrizze az internetkapcsolatát, és próbálja meg újra.")))
                 return
             }
             
             guard let data = data else {
-                completion(.failure(CustomAPIError.missingData("The server returned an empty response.")))
+                completion(.failure(CustomAPIError.missingData("A kiszolgáló üres választ küldött vissza.")))
                 return
             }
             
@@ -57,12 +58,12 @@ class APICaller {
                     completion(.success(APIResponse))
                     return
                 } else {
-                    completion(.failure(CustomAPIError.unexpectedError(APIResponse.errorMessage ?? "An unexpected error occurred. Please try again later.")))
+                    completion(.failure(CustomAPIError.unexpectedError(APIResponse.errorMessage.debugDescription)))
                     return
                 }
                 
             } catch {
-                completion(.failure(CustomAPIError.wrongDataFormat("The server returned data in an unexpected format.")))
+                completion(.failure(CustomAPIError.wrongDataFormat("A kiszolgáló nem várt formátumban küldte vissza az adatokat.")))
                 return
             }
         }
@@ -85,39 +86,49 @@ class APICaller {
         do {
             request.httpBody = try JSONSerialization.data(withJSONObject: parameters, options: .prettyPrinted)
         } catch {
-            completion(.failure(CustomAPIError.unexpectedError("Unexpected error happened"))) //This should never happen though.
+            completion(.failure(CustomAPIError.networkError("Váratlan hiba történt.")))
             return
         }
         
         let task = URLSession.shared.dataTask(with: request) { data, response, error in
-            if let error = error {
-                completion(.failure(CustomAPIError.networkError(error.localizedDescription)))
+            if error != nil {
+                completion(.failure(CustomAPIError.networkError("Váratlan hiba történt.")))
                 return
             }
             
-            guard let response = response as? HTTPURLResponse, response.statusCode == 200 else {
-                completion(.failure(CustomAPIError.networkError("A network error occurred. Please check your internet connection and try again.")))
+            guard response is HTTPURLResponse else {
+                completion(.failure(CustomAPIError.networkError("Hálózati hiba történt. Kérjük, ellenőrizze az internetkapcsolatát, és próbálja meg újra.")))
                 return
             }
                         
             guard let data = data else {
-                completion(.failure(CustomAPIError.missingData("The server returned an empty response.")))
+                completion(.failure(CustomAPIError.missingData("A kiszolgáló üres választ küldött vissza.")))
                 return
             }
             
             do {
                 let APIResponse = try JSONDecoder().decode(APIResponse<[City]>.self, from: data)
-                
                 if APIResponse.success {
                     completion(.success(APIResponse))
                     return
                 } else {
-                    completion(.failure(CustomAPIError.unexpectedError(APIResponse.errorMessage ?? "An unexpected error occurred. Please try again later.")))
-                    return
+                    if let errorMessage = APIResponse.errorMessage {
+                        switch errorMessage {
+                            
+                        case .single(let singleError):
+                            completion(.failure(CustomAPIError.unexpectedError(singleError)))
+                            return
+                        case .multiple(let multipleErrors):
+                            for singleError in multipleErrors {
+                                completion(.failure(CustomAPIError.unexpectedError(singleError.value.first ?? "Váratlan hiba történt.")))
+                                return
+                            }
+                        }
+                    }
                 }
                 
             } catch {
-                completion(.failure(CustomAPIError.wrongDataFormat("The server returned data in an unexpected format.")))
+                completion(.failure(CustomAPIError.wrongDataFormat("A kiszolgáló nem várt formátumban küldte vissza az adatokat.")))
                 return
             }
         }
@@ -149,7 +160,7 @@ class APICaller {
         do {
             httpBody = try JSONSerialization.data(withJSONObject: body)
         } catch {
-            completion(.failure(CustomAPIError.unexpectedError("Unexpected error happened")))
+            completion(.failure(CustomAPIError.unexpectedError("Váratlan hiba történt.")))
             return
         }
         
@@ -161,18 +172,18 @@ class APICaller {
         request.httpBody = httpBody
         
         let task = URLSession.shared.dataTask(with: request) { data, response, error in
-            if let error = error {
-                completion(.failure(CustomAPIError.networkError(error.localizedDescription)))
+            if error != nil {
+                completion(.failure(CustomAPIError.networkError("Váratlan hiba történt.")))
                 return
             }
             
-            guard let response = response as? HTTPURLResponse, response.statusCode == 200 else {
-                completion(.failure(CustomAPIError.networkError("A network error occurred. Please check your internet connection and try again.")))
+            guard response is HTTPURLResponse else {
+                completion(.failure(CustomAPIError.networkError("Hálózati hiba történt. Kérjük, ellenőrizze az internetkapcsolatát, és próbálja meg újra.")))
                 return
             }
             
             guard let data = data else {
-                completion(.failure(CustomAPIError.missingData("The server returned an empty response.")))
+                completion(.failure(CustomAPIError.missingData("A kiszolgáló üres választ küldött vissza.")))
                 return
             }
                                     
@@ -183,14 +194,22 @@ class APICaller {
                     completion(.success(APIResponse))
                     return
                 } else {
-                    completion(.failure(CustomAPIError.unexpectedError(APIResponse.errorMessage ?? "An unexpected error occurred. Please try again later.")))
-                    return
+                    if let errorMessage = APIResponse.errorMessage {
+                        switch errorMessage {
+                            
+                        case .single(let singleError):
+                            completion(.failure(CustomAPIError.unexpectedError(singleError)))
+                            return
+                        case .multiple(let multipleErrors):
+                            for singleError in multipleErrors {
+                                completion(.failure(CustomAPIError.unexpectedError(singleError.value.first ?? "Váratlan hiba történt.")))
+                                return
+                            }
+                        }
+                    }
                 }
-                
             } catch {
-                print(error.localizedDescription)
-                print(error)
-                completion(.failure(CustomAPIError.wrongDataFormat("The server returned data in an unexpected format.")))
+                completion(.failure(CustomAPIError.wrongDataFormat("A kiszolgáló nem várt formátumban küldte vissza az adatokat.")))
                 return
             }
         }
