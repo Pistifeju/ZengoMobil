@@ -92,49 +92,72 @@ class CitiesViewController: UIViewController {
         }
     }
     
+    private func deleteSelectedCity(_ cities: [City], _ indexPath: IndexPath) {
+        let selectedCity = cities[indexPath.row]
+        let requestType = RequestType.deleteCity(city_id: selectedCity.id)
+        APICaller.shared.performRequest(requestType) { [weak self] result in
+            guard let strongSelf = self else { return }
+            switch result {
+            case .success(_):
+                DispatchQueue.main.async {
+                    strongSelf.cities?.remove(at: indexPath.row)
+                    strongSelf.citiesTableView.deleteRows(at: [indexPath], with: .fade)
+                }
+            case .failure(let error):
+                //TODO: - SHOW ALERT HERE
+                print(error.localizedDescription)
+            }
+        }
+    }
+    
+    private func postNewCity(_ strongSelf: CitiesViewController, _ cityName: String) {
+        let city = City(id: strongSelf.state.id, name: cityName)
+        let requestType = RequestType.createNewCity(city: city)
+        APICaller.shared.performRequest(requestType) { [weak self] result in
+            switch result {
+            case .success(let city):
+                guard let city = city.data else { return }
+                DispatchQueue.main.async {
+                    strongSelf.cities?.append(city)
+                    strongSelf.citiesTableView.reloadData()
+                }
+            case .failure(let error):
+                //TODO: - SHOW ALERT HERE
+                print(error.localizedDescription)
+            }
+        }
+    }
+    
     // MARK: - Selectors
     
     @objc private func didTapAddNewCityButton() {
-        let alertController = UIAlertController(title: "New City", message: "Create a new city", preferredStyle: .alert)
+        let alertController = UIAlertController(title: "Új város", message: "Új város hozzáadása.", preferredStyle: .alert)
         
         var citiesName = [String]()
         
         if let cities {
             citiesName = cities.map({$0.name.lowercased()})
         }
-                
+        
         alertController.addTextField { (textField) in
-            textField.placeholder = "City Name"
+            textField.placeholder = "Város név"
         }
         
-        let createCityAction = UIAlertAction(title: "Create", style: .destructive) { [weak self] (action) in
+        let createCityAction = UIAlertAction(title: "Hozzáadás", style: .default) { [weak self] (action) in
             guard let strongSelf = self else { return }
             if let textField = alertController.textFields?.first, let cityName = textField.text {
                 if citiesName.contains(cityName.lowercased()) {
-                    AlertManager.shared.showBasicAlert(on: strongSelf, with: "City already exists", and: "A city with this name already exists.")
+                    AlertManager.shared.showBasicAlert(on: strongSelf, with: "Létező város", and: "Ilyen nevű város már létezik.")
                 } else {
-                    let city = City(id: strongSelf.state.id, name: cityName)
-                    APICaller.shared.createNewCity(with: city) { [weak self] result in
-                        switch result {
-                        case .success(let city):
-                            guard let city = city.data else { return }
-                            strongSelf.cities?.append(city)
-                            DispatchQueue.main.async {
-                                strongSelf.citiesTableView.reloadData()
-                            }
-                        case .failure(let error):
-                            //TODO: - SHOW ALERT HERE
-                            print(error.localizedDescription)
-                        }
-                    }
+                    strongSelf.postNewCity(strongSelf, cityName)
                 }
             }
         }
-
-        let dismissAction = UIAlertAction(title: "Dismiss", style: .cancel)
+        
+        let dismissAction = UIAlertAction(title: "Vissza", style: .cancel)
         alertController.addAction(dismissAction)
         alertController.addAction(createCityAction)
-
+        
         present(alertController, animated: true, completion: nil)
     }
 }
@@ -159,6 +182,13 @@ extension CitiesViewController: UITableViewDelegate {
 // MARK: - UITableViewDataSource
 
 extension CitiesViewController: UITableViewDataSource {
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+        guard let cities = cities else { return }
+        if editingStyle == .delete {
+            deleteSelectedCity(cities, indexPath)
+        }
+    }
+    
     func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }

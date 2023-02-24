@@ -6,6 +6,12 @@
 //
 import Foundation
 
+enum RequestType {
+    case createNewCity(city: City)
+    case deleteCity(city_id: Int)
+    case updateCity(city: City)
+}
+
 class APICaller {
     
     static let shared = APICaller()
@@ -118,26 +124,41 @@ class APICaller {
         task.resume()
     }
     
-    func createNewCity(with city: City, completion: @escaping(Result<APIResponse<City>, Error>) -> Void) {
+    func performRequest(_ requestType: RequestType, completion: @escaping(Result<APIResponse<City>, Error>) -> Void) {
         guard let url = URL(string: cityURLString) else {
             completion(.failure(URLError.init(.badURL)))
             return
         }
         
-        var request = URLRequest(url: url)
-        request.httpMethod = "PUT"
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.addValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
-        request.addValue(token, forHTTPHeaderField: "token")
+        var httpMethod: String
+        var httpBody: Data?
+        var body: [String: Any]
+        
+        switch requestType {
+        case .createNewCity(city: let city):
+            httpMethod = "PUT"
+            body = ["name": city.name, "state_id": city.id]
+        case .deleteCity(city_id: let city_id):
+            httpMethod = "DELETE"
+            body = ["city_id": city_id]
+        case .updateCity(city: let city):
+            httpMethod = "PATCH"
+            body = ["name": city.name, "city_id": city.id]
+        }
         
         do {
-            let body: [String: Any] = ["name": city.name, "state_id": city.id]
-            let bodyJSON = try JSONSerialization.data(withJSONObject: body)
-            request.httpBody = bodyJSON
+            httpBody = try JSONSerialization.data(withJSONObject: body)
         } catch {
-            completion(.failure(CustomAPIError.unexpectedError("Unexpected error happened"))) //This should never happen though.
+            completion(.failure(CustomAPIError.unexpectedError("Unexpected error happened")))
             return
         }
+        
+        var request = URLRequest(url: url)
+        request.addValue(token, forHTTPHeaderField: "token")
+        request.addValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
+        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.httpMethod = httpMethod
+        request.httpBody = httpBody
         
         let task = URLSession.shared.dataTask(with: request) { data, response, error in
             if let error = error {
@@ -154,7 +175,7 @@ class APICaller {
                 completion(.failure(CustomAPIError.missingData("The server returned an empty response.")))
                 return
             }
-                        
+                                    
             do {
                 let APIResponse = try JSONDecoder().decode(APIResponse<City>.self, from: data)
                 
@@ -167,10 +188,16 @@ class APICaller {
                 }
                 
             } catch {
+                print(error.localizedDescription)
+                print(error)
                 completion(.failure(CustomAPIError.wrongDataFormat("The server returned data in an unexpected format.")))
                 return
             }
         }
         task.resume()
+    }
+    
+    private func createURLRequest(_ requestType: RequestType) {
+        
     }
 }
